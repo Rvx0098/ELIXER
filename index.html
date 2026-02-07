@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  emailjs.init("IU8aTl31nIa3DiPWn");
+</script>
+
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ELIXR — Ritual Uniform</title>
+
+  <!-- FONTS -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=JetBrains+Mono:wght@300&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ENTRY RITUAL -->
+  <div class="enter-screen" id="enterScreen" onclick="this.style.display='none'">
+
+    <div class="logo-stack">
+      <div class="sigil">⨂</div>
+      <div class="logo-text">ELIXR</div>
+    </div>
+    <p>ENTER THE FORMULA</p>
+  </div>
+
+  <audio id="ritualSound" src="assets/ritual.mp3"></audio>
+
+  <!-- BACKGROUND VIDEO -->
+  <video autoplay muted loop id="bg-video">
+    <source src="assets/bg.mp4" type="video/mp4">
+  </video>
+
+  <div class="overlay"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      <span class="nav-sigil">⨂</span>
+      <span class="nav-text">ELIXR</span>
+    </div>
+    <ul>
+      <li><a href="#shop">UNIFORM</a></li>
+      <li><a href="#archive">ARCHIVE</a></li>
+      <li><a href="#contact">CONTACT</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="center-content">
+      <h1>FORM IS THE FORMULA</h1>
+      <span class="divider"></span>
+      <p>RITUAL UNIFORM SYSTEM</p>
+    </div>
+
+    <!-- ANIMATION SPACE -->
+    <div class="animation-zone">
+      <div class="pulse-circle"></div>
+    </div>
+  </section>
+
+  <!-- SHOP -->
+  <section id="shop" class="shop">
+    <h2>ELIXR 01</h2>
+
+    <div class="product">
+      <h3>ELIXR 01 — OVERSIZED TEE</h3>
+      <p>
+        Heavyweight ritual uniform.<br>
+        Washed black fabric.<br>
+        Incomplete by design.
+      </p>
+      <p class="price">₹2,499</p>
+      <button onclick="window.location.href='https://buy.stripe.com/test_abc123'">
+        ENTER RITUAL
+      </button>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+
+
+  <!-- ARCHIVE -->
+  <section id="archive" class="archive">
+    <p>THE FORM IS NEVER COMPLETE.</p>
+  </section>
+
+
+</button>
+
+
+  <!-- CONTACT -->
+  <section id="contact" class="contact">
+    <p>INSTAGRAM — @elixr.ritual</p>
+    <p>elixr.formula@gmail.com</p>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
