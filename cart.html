@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+ <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  emailjs.init("IU8aTl31nIa3DiPWn");
+</script>
+
+<body>
+
+
+
+<h2>YOUR ORDER</h2>
+<div id="cartItems"></div>
+
+<button onclick="checkout()">PAY NOW</button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="script.js"></script>
+<script>showCart()</script>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+<h1>RITUAL COMPLETE</h1>
+<div id="summary"></div>
+
+<script>
+
+</script>
+<h1>RITUAL COMPLETE</h1>
+<div id="summary"></div>
+
+<script>
+  const order = JSON.parse(localStorage.getItem("lastOrder"));
+  if (order) {
+    document.getElementById("summary").innerHTML =
+      order.items.map(i =>
+        `<p>${i.name} — ${i.size} — ₹${i.price}</p>`
+      ).join("") +
+      `<p><strong>Total: ₹${order.total}</strong></p>`;
+  }
+</script>
+
+
+</body>
+</html>
