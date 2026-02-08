@@ -1,28 +1,39 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <title>SUCCESS — ELIXR</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 
 <body>
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="assets/bg.mp4" type="video/mp4">
+  </video>
+  <div class="overlay"></div>
 
-<h1>RITUAL COMPLETE</h1>
-<div id="summary"></div>
+  <section class="success-box">
+    <h1>RITUAL COMPLETE</h1>
+    <p>Your order has been accepted.</p>
 
-<script>
+    <div id="summary"></div>
 
-</script>
-<h1>RITUAL COMPLETE</h1>
-<div id="summary"></div>
+    <a href="uniform.html" class="ghost-btn">RETURN TO UNIFORM</a>
+  </section>
 
-<script>
-  const order = JSON.parse(localStorage.getItem("lastOrder"));
-  if (order) {
-    document.getElementById("summary").innerHTML =
-      order.items.map(i =>
-        `<p>${i.name} — ${i.size} — ₹${i.price}</p>`
-      ).join("") +
-      `<p><strong>Total: ₹${order.total}</strong></p>`;
-  }
-</script>
+  <script>
+    const order = JSON.parse(localStorage.getItem("lastOrder"));
+    const el = document.getElementById("summary");
 
-
+    if (order) {
+      el.innerHTML =
+        order.items.map(i =>
+          `<p>${i.name} — ${i.size} — ₹${i.price}</p>`
+        ).join("") +
+        `<br><p><strong>Total: ₹${order.total}</strong></p>` +
+        `<p>Payment ID: ${order.paymentId}</p>`;
+    } else {
+      el.innerHTML = "<p>No order found.</p>";
+    }
+  </script>
 </body>
 </html>
