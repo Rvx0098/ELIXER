@@ -1,9 +1,6 @@
+emailjs.init("IU8aTl31nIa3DiPWn");
 
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-
-
-/* 🔥 FIREBASE CONFIG — PASTE YOURS */
+// FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyB8AGDx9eOgUFjznYne0YWIGGiBrUosyvc",
   authDomain: "elixr-d3bd5.firebaseapp.com",
@@ -13,168 +10,350 @@ const firebaseConfig = {
   appId: "1:937131245447:web:06b7af9526819782f85d22",
   measurementId: "G-VWGLD2J9W8"
 };
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+
 firebase.initializeApp(firebaseConfig);
 
-// Check login status
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+const ADMIN_EMAIL = "griitxstudios@gmail.com";
+const RAZORPAY_KEY = "rzp_test_SDJbQvIkMQOfl9";
+
+// PRODUCTS (REAL STORE DATA)
+const products = [
+  {
+    id: "elixr01",
+    name: "ELIXR 01 — OVERSIZED TEE",
+    price: 2499,
+    image: "assets/tee1.jpg",
+    description: "Heavyweight ritual uniform. Washed black fabric. Incomplete by design."
+  },
+  {
+    id: "elixr02",
+    name: "ELIXR 02 — ARCHIVE TEE",
+    price: 2599,
+    image: "assets/tee2.jpg",
+    description: "Minimal sigil placement. Archive cut."
+  },
+  {
+    id: "elixr03",
+    name: "ELIXR 03 — VOID TEE",
+    price: 2699,
+    image: "assets/tee3.jpg",
+    description: "Reduced to absence. Ritual minimal."
+  },
+  {
+    id: "elixr04",
+    name: "ELIXR 04 — RITUAL TEXT TEE",
+    price: 2799,
+    image: "assets/tee4.jpg",
+    description: "Text-based ceremonial uniform."
+  },
+  {
+    id: "elixr05",
+    name: "ELIXR 05 — ARCHETYPE TEE",
+    price: 2899,
+    image: "assets/tee5.jpg",
+    description: "Foundational uniform. The first formula."
+  }
+];
+
+// ENTRY SCREEN + AUDIO
+document.addEventListener("DOMContentLoaded", () => {
+  const enterScreen = document.getElementById("enterScreen");
+  const sound = document.getElementById("ritualSound");
+
+  if (enterScreen) {
+    enterScreen.addEventListener("click", () => {
+      enterScreen.style.display = "none";
+      if (sound) {
+        sound.volume = 0.25;
+        sound.play().catch(() => {});
+      }
+    });
+  }
+});
+
+// CART
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function addToCart(name, price, size) {
+  cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart.push({ name, price, size });
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert("Added to cart.");
+}
+
+function showCart() {
+  const el = document.getElementById("cartItems");
+  if (!el) return;
+
+  cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  if (cart.length === 0) {
+    el.innerHTML = "<p>Your ritual is empty.</p>";
+    return;
+  }
+
+  let total = 0;
+  el.innerHTML = "";
+
+  cart.forEach((item, index) => {
+    total += item.price;
+    el.innerHTML += `
+      <div style="margin-bottom:15px;">
+        <p>${item.name} | Size: ${item.size} | ₹${item.price}</p>
+        <button onclick="removeItem(${index})">REMOVE</button>
+      </div>
+    `;
+  });
+
+  el.innerHTML += `<h3>Total: ₹${total}</h3>`;
+}
+
+function removeItem(index) {
+  cart = JSON.parse(localStorage.getItem("cart")) || [];
+  cart.splice(index, 1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  showCart();
+}
+
+// LOGIN REQUIRED
 function requireLogin(callback) {
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-      callback(user);
-    } else {
-      alert("Please login to continue");
+  auth.onAuthStateChanged(user => {
+    if (user) callback(user);
+    else {
+      alert("Login required.");
       window.location.href = "auth.html";
     }
   });
 }
 
-
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-/* CART */
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-function addToCart(name, price, size) {
-  cart.push({ name, price, size });
-  localStorage.setItem("cart", JSON.stringify(cart));
-  alert("Added");
-}
-
-function showCart() {
-  const el = document.getElementById("cartItems");
-  el.innerHTML = "";
-  cart.forEach(i => el.innerHTML += `<p>${i.name} (${i.size}) ₹${i.price}</p>`);
-}
-
-/* AUTH */
+// AUTH
 function signup() {
-  auth.createUserWithEmailAndPassword(email.value, password.value)
-    .then(() => alert("Signed up"));
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  auth.createUserWithEmailAndPassword(email, password)
+    .then(() => {
+      alert("Signup successful!");
+      window.location.href = "uniform.html";
+    })
+    .catch(err => alert(err.message));
 }
 
 function login() {
-  auth.signInWithEmailAndPassword(email.value, password.value)
-    .then(() => location.href="index.html");
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => {
+      alert("Login successful!");
+      window.location.href = "uniform.html";
+    })
+    .catch(err => alert(err.message));
 }
 
-/* CHECKOUT */
-function checkout() {
+function logout() {
+  auth.signOut().then(() => {
+    alert("Logged out.");
+    window.location.href = "index.html";
+  });
+}
 
-  // 1️⃣ Get cart
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// PRODUCT GRID RENDER
+function renderProductGrid() {
+  const grid = document.getElementById("productGrid");
+  if (!grid) return;
 
-  if (cart.length === 0) {
-    alert("Cart is empty");
+  grid.innerHTML = "";
+
+  products.forEach(p => {
+    grid.innerHTML += `
+      <div class="product">
+        <img src="${p.image}" style="width:100%; border-radius:6px; border:1px solid #222; margin-bottom:15px;">
+        <h3>${p.name}</h3>
+        <p>${p.description}</p>
+        <p class="price">₹${p.price}</p>
+
+        <select id="size-${p.id}">
+          <option>S</option><option>M</option><option>L</option><option>XL</option>
+        </select>
+
+        <div class="btn-row">
+          <button onclick="addToCart('${p.name}',${p.price},document.getElementById('size-${p.id}').value)">
+            ADD TO CART
+          </button>
+
+          <button class="buy-btn" onclick="buyNow('${p.name}',${p.price},document.getElementById('size-${p.id}').value)">
+            BUY NOW
+          </button>
+        </div>
+
+        <br>
+        <a href="product.html?id=${p.id}" class="ghost-btn">VIEW PRODUCT</a>
+      </div>
+    `;
+  });
+}
+
+// SINGLE PRODUCT PAGE
+function renderSingleProduct() {
+  const page = document.getElementById("productPage");
+  if (!page) return;
+
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+
+  const product = products.find(p => p.id === id);
+
+  if (!product) {
+    page.innerHTML = "<h2>Product not found.</h2>";
     return;
   }
 
-  // 2️⃣ Calculate total
-  let total = cart.reduce((sum, item) => sum + item.price, 0);
+  page.innerHTML = `
+    <div class="auth-box">
+      <img src="${product.image}" style="width:100%; border-radius:8px; border:1px solid #222; margin-bottom:20px;">
+      <h2>${product.name}</h2>
+      <p style="margin-top:15px; font-family:JetBrains Mono;">${product.description}</p>
+      <p style="margin-top:15px;"><strong>₹${product.price}</strong></p>
 
-  // 3️⃣ Razorpay options
-  function checkout() {
-  requireLogin((user) => {
+      <select id="singleSize">
+        <option>S</option><option>M</option><option>L</option><option>XL</option>
+      </select>
 
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      <br><br>
+
+      <button onclick="addToCart('${product.name}',${product.price},document.getElementById('singleSize').value)">
+        ADD TO CART
+      </button>
+
+      <button class="buy-btn" onclick="buyNow('${product.name}',${product.price},document.getElementById('singleSize').value)">
+        BUY NOW
+      </button>
+
+      <br><br>
+      <a href="uniform.html" class="ghost-btn">BACK</a>
+    </div>
+  `;
+}
+
+// BUY NOW (SINGLE PRODUCT)
+function buyNow(name, price, size) {
+  requireLogin(user => {
+    openRazorpay(user, [{ name, price, size }], price);
+  });
+}
+
+// CART CHECKOUT
+function checkoutCart() {
+  requireLogin(user => {
+    cart = JSON.parse(localStorage.getItem("cart")) || [];
+
     if (cart.length === 0) {
-      alert("Cart is empty");
+      alert("Cart empty.");
       return;
     }
 
-    let total = cart.reduce((sum, item) => sum + item.price, 0);
-
-    let options = {
-      key: "rzp_test_XXXXXXXX", // YOUR RAZORPAY KEY ID
-      amount: total * 100,
-      currency: "INR",
-      name: "ELIXR",
-      description: "Ritual Uniform Order",
-
-      handler: function (response) {
-        handleSuccessfulPayment(user, cart, total);
-      },
-
-      prefill: {
-        email: user.email
-      },
-
-      theme: {
-        color: "#0B0B0B"
-      }
-    };
-
-    new Razorpay(options).open();
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    openRazorpay(user, cart, total);
   });
 }
 
+// RAZORPAY POPUP
+function openRazorpay(user, items, total) {
+  const options = {
+    key: RAZORPAY_KEY,
+    amount: total * 100,
+    currency: "INR",
+    name: "ELIXR",
+    description: "Ritual Uniform Order",
+    prefill: { email: user.email },
 
-  // 4️⃣ Open Razorpay popup
-  let rzp = new Razorpay(options);
-  rzp.open();
-}
+    handler: function (response) {
+      saveOrderToFirebase(user, items, total, response.razorpay_payment_id);
+    },
 
-
-/* SAVE ORDER + EMAIL */
-function saveOrder() {
-  const user = auth.currentUser;
-
-  const order = {
-    user: user.email,
-    items: cart,
-    date: new Date()
+    theme: { color: "#0B0B0B" }
   };
 
-  db.collection("orders").add(order);
-
-  localStorage.setItem("lastOrder", JSON.stringify(order));
-
-  emailjs.send("SERVICE_ID","TEMPLATE_ID",{
-    email: user.email,
-    order: JSON.stringify(cart)
-  });
-
-  location.href="success.html";
+  new Razorpay(options).open();
 }
-function saveOrderToFirebase(user, cart, total, paymentId) {
-  return firebase.firestore().collection("orders").add({
+
+// SAVE ORDER + EMAIL
+function saveOrderToFirebase(user, items, total, paymentId) {
+  db.collection("orders").add({
     userEmail: user.email,
-    items: cart,
+    items: items,
     totalAmount: total,
     paymentId: paymentId,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  })
+  .then(() => {
+    sendOrderEmail(user.email, items, total);
+
+    localStorage.setItem("lastOrder", JSON.stringify({
+      items,
+      total,
+      paymentId
+    }));
+
+    localStorage.removeItem("cart");
+    window.location.href = "success.html";
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Order saving failed.");
   });
 }
-function handleSuccessfulPayment(user, cart, total) {
 
-  const paymentId = "RZP_" + Date.now(); // simple id for now
-
-  saveOrderToFirebase(user, cart, total, paymentId)
-    .then(() => {
-      sendOrderEmail(user.email, cart, total);
-
-      localStorage.setItem("lastOrder", JSON.stringify({
-        items: cart,
-        total: total
-      }));
-
-      localStorage.removeItem("cart");
-      window.location.href = "success.html";
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Order saved failed, contact support");
-    });
-}
-function sendOrderEmail(email, cart, total) {
-  let itemsText = cart.map(i =>
-    `${i.name} (Size: ${i.size}) - ₹${i.price}`
+// EMAIL SEND
+function sendOrderEmail(email, items, total) {
+  const itemsText = items.map(i =>
+    `${i.name} | Size: ${i.size} | ₹${i.price}`
   ).join("\n");
 
-  emailjs.send("SERVICE_ID", "TEMPLATE_ID", {
+  // Replace with your EmailJS IDs
+  emailjs.send("service_xxxx", "template_xxxx", {
     to_email: email,
     items: itemsText,
     total: total
+  })
+  .then(() => console.log("Email sent"))
+  .catch(err => console.log("Email failed", err));
+}
+
+// ADMIN PAGE LOAD
+function loadAdminOrders() {
+  requireLogin(user => {
+    if (user.email !== ADMIN_EMAIL) {
+      alert("Access denied.");
+      window.location.href = "index.html";
+      return;
+    }
+
+    const el = document.getElementById("adminOrders");
+    el.innerHTML = "<p>Loading orders...</p>";
+
+    db.collection("orders").orderBy("createdAt", "desc").get()
+      .then(snapshot => {
+        el.innerHTML = "";
+
+        snapshot.forEach(doc => {
+          const o = doc.data();
+          el.innerHTML += `
+            <div style="border:1px solid #333; padding:15px; margin:15px 0;">
+              <p><strong>Email:</strong> ${o.userEmail}</p>
+              <p><strong>Total:</strong> ₹${o.totalAmount}</p>
+              <p><strong>Payment:</strong> ${o.paymentId}</p>
+              <p><strong>Items:</strong></p>
+              <pre style="text-align:left; white-space:pre-wrap; font-family:JetBrains Mono;">
+${o.items.map(i => `${i.name} (${i.size})`).join("\n")}
+              </pre>
+            </div>
+          `;
+        });
+      });
   });
 }
