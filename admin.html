@@ -1,1 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ADMIN — ELIXR</title>
+  <link rel="stylesheet" href="style.css">
 
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+</head>
+
+<body>
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="assets/bg.mp4" type="video/mp4">
+  </video>
+  <div class="overlay"></div>
+
+  <section class="page-title">
+    <h1>ADMIN PANEL</h1>
+    <p>ORDER DATABASE</p>
+  </section>
+
+  <section class="cart-box">
+    <div id="adminOrders"></div>
+  </section>
+
+  <script src="script.js"></script>
+  <script>
+    loadAdminOrders();
+  </script>
+</body>
+</html>
