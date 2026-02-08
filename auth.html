@@ -1,20 +1,36 @@
 <!DOCTYPE html>
 <html>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<head>
+  <title>LOGIN — ELIXR</title>
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+</head>
+
 <body>
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="assets/bg.mp4" type="video/mp4">
+  </video>
+  <div class="overlay"></div>
 
+  <section class="auth-box">
+    <h2>LOGIN / SIGNUP</h2>
 
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
 
-<h2>LOGIN / SIGN UP</h2>
+    <button onclick="signup()">SIGN UP</button>
+    <button onclick="login()">LOGIN</button>
+    <button onclick="logout()">LOGOUT</button>
 
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
+    <p style="margin-top:20px; font-family:JetBrains Mono; font-size:12px;">
+      Admin access only for: griitxstudios@gmail.com
+    </p>
 
-<button onclick="signup()">SIGN UP</button>
-<button onclick="login()">LOGIN</button>
+    <a href="index.html" class="ghost-btn">BACK</a>
+  </section>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
