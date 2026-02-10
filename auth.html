@@ -1,11 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LOGIN — ELIXR</title>
+
   <link rel="stylesheet" href="./style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=JetBrains+Mono:wght@300&display=swap" rel="stylesheet">
 
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
@@ -13,11 +20,27 @@
     <source src="assets/bg.mp4" type="video/mp4">
   </video>
   <div class="overlay"></div>
+  <img src="assets/symbol.png" class="page-sigil">
+
+  <nav>
+    <div class="nav-logo">
+      <img src="assets/symbol.png" class="nav-symbol">
+      <span class="nav-text">ELIXR</span>
+    </div>
+
+    <ul>
+      <li><a href="uniform.html">UNIFORM</a></li>
+      <li><a href="archive.html">ARCHIVE</a></li>
+      <li><a href="contact.html">CONTACT</a></li>
+      <li><a href="cart.html">CART</a></li>
+      <li><a href="auth.html">LOGIN</a></li>
+    </ul>
+  </nav>
 
   <section class="auth-box">
     <h2>LOGIN / SIGNUP</h2>
 
-    <input id="email" placeholder="Email">
+    <input id="email" type="email" placeholder="Email">
     <input id="password" type="password" placeholder="Password">
 
     <button onclick="signup()">SIGN UP</button>

@@ -25,14 +25,14 @@ const products = [
     id: "elixr01",
     name: "ELIXR 01 — OVERSIZED TEE",
     price: 2499,
-    image: "assets/tee1.jpg",
+    image: "assets/elixr01.jpg",
     description: "Heavyweight ritual uniform. Washed black fabric. Incomplete by design."
   },
   {
     id: "elixr02",
     name: "ELIXR 02 — ARCHIVE TEE",
     price: 2599,
-    image: "assets/tee2.jpg",
+    image: "assets/elixr02.png",
     description: "Minimal sigil placement. Archive cut."
   },
   {
@@ -58,20 +58,60 @@ const products = [
   }
 ];
 
-// ENTRY SCREEN + AUDIO
+// ENTRY SCREEN + AUDIO + CLICK SFX
 document.addEventListener("DOMContentLoaded", () => {
   const enterScreen = document.getElementById("enterScreen");
   const sound = document.getElementById("ritualSound");
 
+  // background ritual sound (loops) – start on first user click
+  function startRitualSound() {
+    if (!sound) return;
+    sound.volume = 0.25;
+    sound.loop = true;
+    sound.play().catch(() => {});
+
+    // after we successfully attempt once, remove this listener
+    document.removeEventListener("click", startRitualSound);
+  }
+
+  // index page: click to enter, also starts sound
   if (enterScreen) {
     enterScreen.addEventListener("click", () => {
       enterScreen.style.display = "none";
-      if (sound) {
-        sound.volume = 0.25;
-        sound.play().catch(() => {});
-      }
+      startRitualSound();
     });
+  } else if (sound) {
+    // other pages: first click anywhere starts the loop
+    document.addEventListener("click", startRitualSound);
   }
+
+  // subtle click sound for interactions (requires you to place assets/click.mp3)
+  let clickAudio;
+  try {
+    clickAudio = new Audio("assets/click.mp3");
+    clickAudio.volume = 0.4;
+  } catch (e) {
+    clickAudio = null;
+  }
+
+  function playClick() {
+    if (!clickAudio) return;
+    // rewind so rapid clicks still play from start
+    clickAudio.currentTime = 0;
+    clickAudio.play().catch(() => {});
+  }
+
+  // attach to primary interactive elements
+  const interactiveSelectors = [
+    "button",
+    ".ghost-btn",
+    "nav a"
+  ];
+
+  document.querySelectorAll(interactiveSelectors.join(","))
+    .forEach(el => {
+      el.addEventListener("click", playClick);
+    });
 });
 
 // CART
@@ -91,7 +131,12 @@ function showCart() {
   cart = JSON.parse(localStorage.getItem("cart")) || [];
 
   if (cart.length === 0) {
-    el.innerHTML = "<p>Your ritual is empty.</p>";
+    el.innerHTML = `
+      <div class="cart-empty">
+        <p>Your ritual is empty.</p>
+        <a href="uniform.html" class="ghost-btn">RETURN TO UNIFORM</a>
+      </div>
+    `;
     return;
   }
 
@@ -101,14 +146,25 @@ function showCart() {
   cart.forEach((item, index) => {
     total += item.price;
     el.innerHTML += `
-      <div style="margin-bottom:15px;">
-        <p>${item.name} | Size: ${item.size} | ₹${item.price}</p>
-        <button onclick="removeItem(${index})">REMOVE</button>
+      <div class="cart-item">
+        <div class="cart-item-main">
+          <p class="cart-item-name">${item.name}</p>
+          <p class="cart-item-meta">Size: ${item.size}</p>
+        </div>
+        <div class="cart-item-price">
+          <span>₹${item.price}</span>
+          <button class="cart-remove-btn" onclick="removeItem(${index})">REMOVE</button>
+        </div>
       </div>
     `;
   });
 
-  el.innerHTML += `<h3>Total: ₹${total}</h3>`;
+  el.innerHTML += `
+    <div class="cart-summary">
+      <span class="cart-total-label">TOTAL</span>
+      <span class="cart-total-amount">₹${total}</span>
+    </div>
+  `;
 }
 
 function removeItem(index) {

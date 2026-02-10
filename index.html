@@ -6,7 +6,7 @@
   <title>ELIXR — Ritual Uniform</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=JetBrains+Mono:wght@300&display=swap" rel="stylesheet">
- <link rel="stylesheet" href="./style.css?v=2">
+  <link rel="stylesheet" href="./style.css">
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -26,6 +26,7 @@
     <source src="assets/bg.mp4" type="video/mp4">
   </video>
   <div class="overlay"></div>
+  <img src="assets/symbol.png" class="page-sigil">
 
   <div class="enter-screen" id="enterScreen">
     <div class="logo-stack">
@@ -35,7 +36,7 @@
     <p>ENTER THE FORMULA</p>
   </div>
 
-  <audio id="ritualSound" src="assets/ritual.mp3"></audio>
+  <audio id="ritualSound" src="assets/ritual.mp3" loop></audio>
 
   <nav>
     <div class="nav-logo">
@@ -67,6 +68,21 @@
     <div class="animation-zone">
       <div class="pulse-circle"></div>
     </div>
+  </section>
+
+  <section class="collections-strip">
+    <a href="uniform.html" class="collection-tile">
+      <span class="collection-label">UNIFORM</span>
+      <span class="collection-sub">ACTIVE DROPS</span>
+    </a>
+    <a href="archive.html" class="collection-tile">
+      <span class="collection-label">ARCHIVE</span>
+      <span class="collection-sub">PAST RITUALS</span>
+    </a>
+    <a href="contact.html" class="collection-tile">
+      <span class="collection-label">CONTACT</span>
+      <span class="collection-sub">COMMUNICATION</span>
+    </a>
   </section>
 
   <script src="script.js"></script>
