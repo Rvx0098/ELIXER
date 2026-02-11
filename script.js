@@ -39,7 +39,7 @@ const products = [
     id: "elixr03",
     name: "ELIXR 03 — VOID TEE",
     price: 2699,
-    image: "assets/tee3.jpg",
+    image: "assets/elixr03.png",
     description: "Reduced to absence. Ritual minimal."
   },
   {
